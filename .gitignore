@@ -1,0 +1,20 @@
+# Python virtual environment files
+Include/
+Lib/
+Scripts/
+pyvenv.cfg
+
+# Node.js dependencies
+package-lock.json
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables
+.env
+
+# IDE settings
+.vscode/
+.idea/
