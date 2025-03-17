@@ -14,15 +14,15 @@ function TeamDetail() {
   useEffect(() => {
     const fetchTeamDetails = async () => {
       try {
-        const teamResponse = await axios.get<FantasyTeam>(`${baseLink}fantasy-teams/${teamId}/`);
+        const teamResponse = await axios.get<FantasyTeam>(`${baseLink}api/fantasy-teams/${teamId}/`);
         setTeam(teamResponse.data);
         
-        const rosterResponse = await axios.get<FantasyRoster[]>(`${baseLink}fantasy-rosters/?fantasy_team_id=${teamId}`);
+        const rosterResponse = await axios.get<FantasyRoster[]>(`${baseLink}api/fantasy-rosters/?fantasy_team_id=${teamId}`);
         setRosters(rosterResponse.data);
         
         // Fetch player details for each roster entry
         for (const roster of rosterResponse.data) {
-          const playerResponse = await axios.get<Player>(`${baseLink}players/${roster.player}/`);
+          const playerResponse = await axios.get<Player>(`${baseLink}api/players/${roster.player}/`);
           setPlayers(prev => ({ ...prev, [roster.player]: playerResponse.data }));
         }
       } catch (error) {
@@ -42,29 +42,18 @@ function TeamDetail() {
   return (
     <div className="min-h-screen min-w-screen bg-gray-900 text-white p-6">
       <Link to={`/leagues/${team.league}`} className="text-blue-400 hover:text-blue-300 mb-4 inline-block">← Back to League</Link>
-      <h1 className="text-3xl font-bold mb-6">{team.name}</h1>
+      <div role="heading" className="text-3xl font-bold mb-6">{team.name}</div>
       <p className="mb-6">Owner: {team.owner}</p>
       
-      <h2 className="text-2xl font-semibold mb-4">Roster</h2>
+      <div className="text-2xl font-semibold mb-4">Roster</div>
       <div className="w-full max-w-4xl">
-        <ul className="space-y-8">
-          {rosters.length > 0 ? (
-            rosters.map((roster) => (
-              <li key={roster.id}>
-                {players[roster.player] ? (
-                  <PlayerCard 
-                    player={players[roster.player]} 
-                    roster={roster}
-                  />
-                ) : (
-                  <div className="bg-gray-800 p-3 rounded-lg">Loading player data...</div>
-                )}
-              </li>
-            ))
-          ) : (
-            <p className="text-gray-400">No players on roster</p>
-          )}
-        </ul>
+        <div className="flex flex-col gap-2">
+          {rosters.map((roster) => (
+            <div key={roster.id}>
+              <PlayerCard player={players[roster.player]} roster={roster} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

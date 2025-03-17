@@ -27,8 +27,49 @@ SECRET_KEY = 'django-insecure-s^nmic40da(#7f9)im8+9n^%r_modfh$qg)+r-6i7eo$#)s$h7
 DEBUG = True
 
 ALLOWED_HOSTS = []
+# CORS settings
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # Vite dev server
+    "http://localhost:3000",  # React dev server
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:3000",
+]
+CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",  # This is the important one
+    "x-requested-with",
+]
 
+# CSRF settings  
+CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+CSRF_COOKIE_HTTPONLY = False  # JavaScript needs access
+CSRF_COOKIE_SAMESITE = 'Lax'  # Use 'Lax' for admin to work correctly
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:8000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:8000",
+]
+CSRF_COOKIE_NAME = 'csrftoken'
+CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
+CSRF_COOKIE_DOMAIN = None  # Allow any subdomain
+CSRF_COOKIE_PATH = '/'
+CSRF_USE_SESSIONS = False  # Store in cookie, not session
+CSRF_COOKIE_AGE = 31449600  # About 1 year in seconds
 
+# SESSION settings should match CSRF settings
+SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'  # 'Lax' is more permissive but still secure 
+                                 # 'None' requires HTTPS in production
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,23 +83,48 @@ INSTALLED_APPS = [
     'fantasy', 
     'django_extensions',
     'corsheaders',
-    'django_filters'
+    'django_filters',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 ]
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# Configure email backend (for development, use console backend)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Allauth settings
+ACCOUNT_LOGIN_METHODS = {'username', 'email'}
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # Before CommonMiddleware
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware'
+    'allauth.account.middleware.AccountMiddleware'
 ]
 
+CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
+
 ROOT_URLCONF = 'cpblbackend.urls'
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 
 TEMPLATES = [
     {
@@ -136,3 +202,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# If you're not using HTTPS in development, temporarily override the secure settings
+if DEBUG:
+    CSRF_COOKIE_SECURE = False
+    SESSION_COOKIE_SECURE = False

@@ -287,6 +287,15 @@ class FantasyRoster(models.Model):
     position = models.CharField(max_length=4, choices=FantasyPosition.choices)
     stats = models.JSONField(default=dict)
     
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['fantasy_team', 'player'],
+                condition=models.Q(fantasy_team__isnull=False),
+                name='unique_player_per_team'
+            )
+        ]
+
     def update_stats(self):
         """Calculates and stores total stats for this player's fantasy stint."""
         games = GameStats.objects.filter(

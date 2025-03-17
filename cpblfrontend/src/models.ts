@@ -47,4 +47,4 @@ export interface Game {
   home_team: number;
   away_team: number;
 }
-export const baseLink = "http://127.0.0.1:8000/api/";
+export const baseLink = "http://localhost:8000/";

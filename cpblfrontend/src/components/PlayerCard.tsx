@@ -15,7 +15,7 @@ function PlayerCard({ player, roster }: PlayerCardProps) {
             <img 
               src={player.profile_image} 
               alt={player.name}   
-              className="w-full h-full object-cover"
+              className="w-fit h-fit object-cover"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
@@ -23,9 +23,10 @@ function PlayerCard({ player, roster }: PlayerCardProps) {
             </div>
           )}
         </div>
-      </div>    
+      </div> 
+      <div className="w-3"></div>
       <div className="flex-grow">
-        <h3 className="text-xl font-semibold">{player.name}</h3>
+        <div className="text-xl font-semibold">{player.name}</div>
         {roster?.position && (
           <p className="text-blue-400 font-medium mt-1">{roster.position}</p>
         )}

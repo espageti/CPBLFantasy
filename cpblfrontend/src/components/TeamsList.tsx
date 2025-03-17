@@ -8,7 +8,7 @@ function TeamsList() {
   const [players, setPlayers] = useState<Record<number, Player>>({});
 
   useEffect(() => {
-    axios.get<FantasyTeam[]>(baseLink + "fantasy-teams/")
+    axios.get<FantasyTeam[]>(baseLink + "api/fantasy-teams/")
       .then((response: AxiosResponse<FantasyTeam[]>) => setTeams(response.data))
       .catch((error) => console.error(error));
   }, []);
@@ -16,7 +16,7 @@ function TeamsList() {
   const fetchPlayer = async (playerId: number) => {
     if (!players[playerId]) {
       try {
-        const response = await axios.get<Player>(baseLink + `players/${playerId}/`);
+        const response = await axios.get<Player>(baseLink + `api/players/${playerId}/`);
         setPlayers(prev => ({ ...prev, [playerId]: response.data }));
       } catch (error) {
         console.error("Error fetching player:", error);
@@ -27,7 +27,7 @@ function TeamsList() {
   const fetchRosters = async (teamId: number) => {
     if (!rosters[teamId]) {
       try {
-        const response = await axios.get<FantasyRoster[]>(baseLink + `fantasy-rosters/?fantasy_team_id=${teamId}`);
+        const response = await axios.get<FantasyRoster[]>(baseLink + `api/fantasy-rosters/?fantasy_team_id=${teamId}`);
         setRosters(prev => ({ ...prev, [teamId]: response.data }));
         response.data.forEach(roster => fetchPlayer(roster.player));
       } catch (error) {
@@ -38,7 +38,7 @@ function TeamsList() {
 
   return (
     <div className="min-h-screen min-w-screen bg-gray-900 text-white p-6 grid place-items-center">
-      <h1 className="text-3xl font-bold text-center mb-6">Fantasy Baseball Teams</h1>
+      <div role = "heading" className="text-3xl font-bold text-center mb-6">Fantasy Baseball Teams</div >
       <div className="w-full max-w-4xl mx-auto">
         <ul className="space-y-4">
           {teams.map((team) => (

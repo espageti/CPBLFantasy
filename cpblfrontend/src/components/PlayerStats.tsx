@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Player, GameStats, Game, baseLink } from '../models';
@@ -76,9 +76,9 @@ function PlayerStats() {
         setLoading(true);
         
         // Fetch all needed data
-        const playersResponse = await axios.get<Player[]>(`${baseLink}players/`);
-        const gamesResponse = await axios.get<Game[]>(`${baseLink}games/`);
-        const statsResponse = await axios.get<GameStats[]>(`${baseLink}game-stats/`);
+        const playersResponse = await axios.get<Player[]>(`${baseLink}api/players/`);
+        const gamesResponse = await axios.get<Game[]>(`${baseLink}api/games/`);
+        const statsResponse = await axios.get<GameStats[]>(`${baseLink}api/game-stats/`);
         
         setPlayers(playersResponse.data);
         
@@ -318,7 +318,7 @@ const playerBattingStatsForYear = selectedYear && battingStats[selectedYear]
     <div className="min-h-screen bg-gray-900 text-white p-6">
       <div className="max-w-7xl mx-auto">
         <Link to="/" className="text-blue-400 hover:text-blue-300 mb-4 inline-block">← Back to Home</Link>
-        <h1 className="text-3xl font-bold mb-6">Player Statistics</h1>
+        <div role="heading" className="text-3xl font-bold mb-6">Player Statistics</div>
         
         <div className="flex justify-between items-center mb-6">
           <div>
@@ -336,18 +336,17 @@ const playerBattingStatsForYear = selectedYear && battingStats[selectedYear]
           </div>
           
           <div className="flex">
-            <button 
-              className={`px-4 py-2 rounded-l-lg ${activeTab === 'batting' 
-                ? 'bg-blue-600 text-white' 
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
+          <button className={`px-4 py-2 rounded-r-lg ${activeTab === 'batting' 
+                ? 'btn-selected'
+                : 'btn-unselected'}`} 
               onClick={() => setActiveTab('batting')}
             >
               Batting
             </button>
             <button 
               className={`px-4 py-2 rounded-r-lg ${activeTab === 'pitching' 
-                ? 'bg-blue-600 text-white' 
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
+                ? 'btn-selected'
+                : 'btn-unselected'}`} 
               onClick={() => setActiveTab('pitching')}
             >
               Pitching
@@ -364,7 +363,7 @@ const playerBattingStatsForYear = selectedYear && battingStats[selectedYear]
                   <tr>
                     <th className="px-4 py-3 text-left">Player</th>
                     <th className="px-4 py-3 text-center">G</th>
-                    <th className="px-4 py-3 text-center">PA</th> {/* Add PA column */}
+                    <th className="px-4 py-3 text-center">PA</th> 
                     <th className="px-4 py-3 text-center">AB</th>
                     <th className="px-4 py-3 text-center">R</th>
                     <th className="px-4 py-3 text-center">H</th>
@@ -375,8 +374,8 @@ const playerBattingStatsForYear = selectedYear && battingStats[selectedYear]
                     <th className="px-4 py-3 text-center">SB</th>
                     <th className="px-4 py-3 text-center">BB</th>
                     <th className="px-4 py-3 text-center">HBP</th>
-                    <th className="px-4 py-3 text-center">SF</th> {/* Add SF column */}
-                    <th className="px-4 py-3 text-center">SAC</th> {/* Add SAC column */}
+                    <th className="px-4 py-3 text-center">SF</th> 
+                    <th className="px-4 py-3 text-center">SAC</th> 
                     <th className="px-4 py-3 text-center">SO</th>
                     <th className="px-4 py-3 text-center">AVG</th>
                     <th className="px-4 py-3 text-center">OBP</th>
@@ -403,7 +402,7 @@ const playerBattingStatsForYear = selectedYear && battingStats[selectedYear]
                           </div>
                         </td>
                         <td className="px-4 py-3 text-center">{stats.games}</td>
-                        <td className="px-4 py-3 text-center">{stats.plateAppearances}</td> {/* Add PA value */}
+                        <td className="px-4 py-3 text-center">{stats.plateAppearances}</td> 
                         <td className="px-4 py-3 text-center">{stats.atBats}</td>
                         <td className="px-4 py-3 text-center">{stats.runs}</td>
                         <td className="px-4 py-3 text-center">{stats.hits}</td>
@@ -413,9 +412,9 @@ const playerBattingStatsForYear = selectedYear && battingStats[selectedYear]
                         <td className="px-4 py-3 text-center">{stats.rbis}</td>
                         <td className="px-4 py-3 text-center">{stats.stolenBases}</td>
                         <td className="px-4 py-3 text-center">{stats.walks}</td>
-                        <td className="px-4 py-3 text-center">{stats.hitByPitches}</td> {/* Add this cell */}
-                        <td className="px-4 py-3 text-center">{stats.sacrificeFlies}</td> {/* Add SF value */}
-                        <td className="px-4 py-3 text-center">{stats.sacrificeBunts}</td> {/* Add SAC value */}
+                        <td className="px-4 py-3 text-center">{stats.hitByPitches}</td> 
+                        <td className="px-4 py-3 text-center">{stats.sacrificeFlies}</td> 
+                        <td className="px-4 py-3 text-center">{stats.sacrificeBunts}</td> 
                         <td className="px-4 py-3 text-center">{stats.strikeouts}</td>
                         <td className="px-4 py-3 text-center font-medium">{stats.battingAverage.toFixed(3).replace(/^0+/, '')}</td>
                         <td className="px-4 py-3 text-center">{stats.onBasePercentage.toFixed(3).replace(/^0+/, '')}</td>

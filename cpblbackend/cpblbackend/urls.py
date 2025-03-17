@@ -18,12 +18,17 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from .views import get_csrf_token, api_login, current_user
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),
+    path('accounts/csrf/', get_csrf_token, name='set_csrf'),
+    path('accounts/api-login/', api_login),
     path('api/', include('fantasy.urls')),  # Ensure this points to your app
+    path('api/current-user/', current_user),
 ]
 
-# At the end of your urlpatterns
+# Add static file serving in development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
