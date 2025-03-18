@@ -239,6 +239,19 @@ class FantasyLeague(models.Model):
     commissioner = models.ForeignKey(User, on_delete=models.CASCADE)
     start_date = models.DateField(default=datetime.date.today)
     end_date = models.DateField(default=datetime.date.today)
+    public = models.BooleanField(default=True)
+    SCORING_CHOICES = [
+        ('ROT', 'Rotisserie'), # Start by implementing simple Rotisserie scoring
+        # ('H2H', 'Head-to-Head') 
+    ]
+    scoring_system = models.CharField(max_length=20, choices=SCORING_CHOICES, default='ROT') 
+    
+    settings = models.JSONField(default=dict)
+    # Possible settings: 
+    # - Draft type (snake, auction)
+    # - Draft order (manual, random, reverse standings)
+    # - Daily/weekly lineup changes (daily, weekly)
+
     def __str__(self):
         return self.name
 

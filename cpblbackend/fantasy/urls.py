@@ -23,6 +23,7 @@ router.register(r'users', UserListView, basename='user')
 urlpatterns = [
     path('', include(router.urls)),
     path("api/fantasy-rosters/", FantasyRosterListView.as_view(), name="fantasy-rosters"),  # Custom view
+    
 ]
 
 if settings.DEBUG:

@@ -49,12 +49,14 @@ class GameStatsViewSet(viewsets.ModelViewSet):
 class FantasyLeagueViewSet(viewsets.ModelViewSet):
     queryset = FantasyLeague.objects.all()
     serializer_class = FantasyLeagueSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 class FantasyTeamViewSet(viewsets.ModelViewSet):
     queryset = FantasyTeam.objects.all()
     serializer_class = FantasyTeamSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['league']
 
 class FantasyRosterViewSet(viewsets.ModelViewSet):
     queryset = FantasyRoster.objects.all()
@@ -63,7 +65,7 @@ class FantasyRosterViewSet(viewsets.ModelViewSet):
 
 class FantasyRosterListView(generics.ListAPIView):
     serializer_class = FantasyRosterSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         """Filter rosters by fantasy team if 'fantasy_team_id' is provided"""

@@ -6,6 +6,7 @@ import { FantasyLeague, baseLink } from "../models";
 function LeagueList() {
   const [leagues, setLeagues] = useState<FantasyLeague[]>([]);
   
+  
   useEffect(() => {
     axios.get<FantasyLeague[]>(baseLink + "api/fantasy-leagues/")
       .then((response: AxiosResponse<FantasyLeague[]>) => setLeagues(response.data))
@@ -16,7 +17,15 @@ function LeagueList() {
     <div className="min-h-screen min-w-screen bg-gray-900 gap-6">
       <Link to="/" style={{color: '#696969'}} className="hover:text-blue-300 mb-4 inline-block">← Back to home</Link>
       <div className=" text-white p-6 flex-col place-items-center">
-        <div role="heading" className="text-3xl font-bold text-center">Fantasy Baseball Leagues</div>
+        <div className="flex justify-between items-center mb-6">
+          <div role="heading" className="text-3xl font-bold">Fantasy Baseball Leagues</div>
+          <Link 
+            to="/create-league" 
+            className="px-4 py-2 bg-green-600 hover:bg-green-500 rounded-lg font-medium transition-colors duration-200"
+          >
+            Create League
+          </Link>
+        </div>
         <div className="h-10"></div>
         <div className="w-full max-w-4xl mx-auto">
           <ul className="space-y-4">

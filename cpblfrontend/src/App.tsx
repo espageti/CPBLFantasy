@@ -11,6 +11,7 @@ import LoginPage from "./components/LoginPage";
 import SignupPage from "./components/SignupPage";
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
+import LeagueCreate from './components/LeagueCreate';
 // import Dashboard from './components/Dashboard';
 // import Profile from './components/Profile';
 
@@ -35,6 +36,11 @@ function App() {
               <Profile />
             </ProtectedRoute>
           } /> */}
+          <Route path="/create-league" element={
+            <ProtectedRoute>
+              <LeagueCreate />
+            </ProtectedRoute>
+          } />
           <Route path="/leagues" element={<LeagueList />} />
           <Route path="/leagues/:leagueId" element={<LeagueDetail />} />
           <Route path="/teams" element={<TeamsList />} />
