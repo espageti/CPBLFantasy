@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { FantasyLeague, FantasyTeam, User, baseLink } from "../models";
+import { useAuth } from "../context/AuthContext";
 
 function LeagueDetail() {
   const { leagueId } = useParams<{leagueId: string}>();
@@ -9,8 +10,21 @@ function LeagueDetail() {
   const [teams, setTeams] = useState<FantasyTeam[]>([]);
   const [users, setUsers] = useState<{[key: number]: User}>({});
   const [loading, setLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
   
-useEffect(() => {
+  // Check if current user already has a team in this league
+  const userHasTeam = teams.some(team => team.owner === user?.id);
+  
+  // Check if league is full
+  const isLeagueFull = league?.settings?.maxTeams && teams.length >= league.settings.maxTeams;
+  
+  // Add join league handler
+  const handleJoinLeague = () => {
+    navigate(`/create-team/${leagueId}`);
+  };
+  
+  useEffect(() => {
     const fetchLeague = async () => {
         try {
             const leagueResponse = await axios.get<FantasyLeague>(`${baseLink}api/fantasy-leagues/${leagueId}/`);
@@ -64,9 +78,35 @@ useEffect(() => {
   return (
     <div className="min-h-screen min-w-screen bg-gray-900">
       <Link to="/leagues" style={{color: '#696969'}} className="hover:text-blue-300 mb-4 inline-block">← Back to Leagues</Link>
-      <div className=" text-white p-6 flex-col place-items-center">
-          <div className="text-3xl font-bold mb-6">{league.name}</div>
+      <div className="text-white p-6 flex-col place-items-center">
+          <div className="flex justify-between items-center mb-6">
+            <div className="text-3xl font-bold">{league.name}</div>
+            
+            {/* Join League Button - only show if user is logged in, doesn't have a team, and league isn't full */}
+            {isAuthenticated && !userHasTeam && !isLeagueFull && (
+              <button
+                onClick={handleJoinLeague}
+                className="px-4 py-2 bg-green-600 hover:bg-green-500 rounded-lg font-medium transition-colors duration-200"
+              >
+                Join League
+              </button>
+            )}
+            
+            {/* Show message if league is full */}
+            {isAuthenticated && !userHasTeam && isLeagueFull && (
+              <div className="text-yellow-500">League is full</div>
+            )}
+          </div>
+          
           <p className="mb-6">Commissioner: {users[league.commissioner]?.username || "Unknown"}</p>
+          
+          {/* League settings/info */}
+          <div className="mb-8 bg-gray-800 p-4 rounded-lg">
+            <p>Start Date: {new Date(league.start_date).toLocaleDateString()}</p>
+            <p>End Date: {new Date(league.end_date).toLocaleDateString()}</p>
+            <p>Scoring: {league.scoring_system === 'ROT' ? 'Rotisserie' : league.scoring_system}</p>
+            <p>Teams: {teams.length}{league.settings?.maxTeams ? ` / ${league.settings.maxTeams}` : ''}</p>
+          </div>
           
           <div className="text-2xl font-semibold mb-4">Teams</div>
           <div className="w-full max-w-4xl">
@@ -84,7 +124,7 @@ useEffect(() => {
                 </li>
               ))}
             </ul>
-            {teams.length === 0 && <p className="text-gray-400">No teams in this league yet.</p>}
+            {teams.length === 0 && <p className="text-gray-400">No teams in this league yet. Be the first to join!</p>}
           </div>
       </div>
     </div>

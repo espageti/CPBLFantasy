@@ -17,7 +17,7 @@ function TeamDetail() {
         const teamResponse = await axios.get<FantasyTeam>(`${baseLink}api/fantasy-teams/${teamId}/`);
         setTeam(teamResponse.data);
         
-        const rosterResponse = await axios.get<FantasyRoster[]>(`${baseLink}api/fantasy-rosters/?fantasy_team_id=${teamId}`);
+        const rosterResponse = await axios.get<FantasyRoster[]>(`${baseLink}api/fantasy-rosters/?fantasy_team=${teamId}`);
         setRosters(rosterResponse.data);
         
         // Fetch player details for each roster entry

@@ -62,6 +62,8 @@ class FantasyRosterViewSet(viewsets.ModelViewSet):
     queryset = FantasyRoster.objects.all()
     serializer_class = FantasyRosterSerializer
     permission_classes = [IsOwnerOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['fantasy_team', 'player']
 
 class FantasyRosterListView(generics.ListAPIView):
     serializer_class = FantasyRosterSerializer
